@@ -1,0 +1,15 @@
+﻿$bg-footer: #2EC4B6;
+$bg-text-footer: #ffffff;
+$bg-menu-hover-color: #FF9F1C;
+
+.appmvc-footer, .privacy {
+    background: $bg-footer;
+    color: $bg-text-footer !important;
+    text-align: center;
+}
+
+.privacy {
+    &:hover {
+        color: $bg-menu-hover-color !important;
+    }
+}

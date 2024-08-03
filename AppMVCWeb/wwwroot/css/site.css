@@ -1,0 +1,219 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+a {
+  text-decoration: none;
+}
+
+.appmvc-navbar {
+  background-color: #2EC4B6;
+}
+.appmvc-navbar .text-navbar, .appmvc-navbar .navbar-brand {
+  color: #FFFFFF !important;
+}
+.appmvc-navbar .text-navbar:hover, .appmvc-navbar .navbar-brand:hover {
+  color: #FF9F1C !important;
+}
+.appmvc-navbar .dropdown-toggle-custom {
+  border-color: transparent !important;
+  color: #FFFFFF;
+}
+.appmvc-navbar .dropdown-toggle-custom:hover {
+  color: #FF9F1C;
+}
+
+.category-sidebar .line {
+  border-bottom: 1px solid #000000;
+  margin-bottom: 10px;
+}
+.category-sidebar a:hover {
+  color: #FF9F1C !important;
+}
+.category-sidebar a.active {
+  color: #2EC4B6 !important;
+}
+.category-sidebar ul, .category-sidebar li {
+  list-style: none;
+}
+.category-sidebar > ul > li > a {
+  font-weight: bold;
+}
+.category-sidebar .category-sidebar-custom {
+  text-transform: uppercase;
+  padding-bottom: 2px;
+}
+
+.cart-navbar {
+  color: #023047;
+  font-weight: 400;
+}
+.cart-navbar:hover {
+  color: #FFFFFF;
+}
+
+.contact-firstcol {
+  background: #2EC4B6;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 10px;
+}
+.contact-firstcol img {
+  max-width: 100px;
+}
+
+.control-label {
+  font-weight: 600;
+}
+
+.btn-custom {
+  background: #2EC4B6;
+  color: #ffffff;
+}
+
+.appmvc-footer, .privacy {
+  background: #2EC4B6;
+  color: #ffffff !important;
+  text-align: center;
+}
+
+.privacy:hover {
+  color: #FF9F1C !important;
+}
+
+.text-blog {
+  color: #2EC4B6;
+  font-weight: bold;
+}
+
+.detail-post .text-post-title {
+  font-weight: 400;
+}
+.detail-post .text-post-description {
+  font-style: italic;
+}
+.detail-post img {
+  max-width: 100%;
+}
+
+.photoDetails {
+  position: relative;
+}
+.photoDetails span {
+  display: block;
+  margin: 10px auto 10px;
+  width: 40%;
+}
+
+.display-product {
+  background: #2EC4B6;
+  color: #ffffff !important;
+  height: 2.4rem;
+  padding: 0 12px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.edit-product {
+  background: #2EC4B6;
+  color: #ffffff !important;
+}
+
+#chatContainer {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 250px; /* Initially small width */
+  height: 300px; /* Initially small height */
+  display: none; /* Initially hidden */
+  flex-direction: column;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* Ensure it's above other content */
+  transition: width 0.3s, height 0.3s; /* Smooth transition */
+  overflow: hidden;
+}
+
+#chatContainer.expanded {
+  display: flex; /* Show the chat container when expanded */
+  width: 400px; /* Expanded width */
+  height: 500px; /* Expanded height */
+}
+
+#messagesList {
+  flex: 1;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#messagesList li {
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: #f1f1f1;
+  white-space: pre-wrap; /* Preserve whitespace and newlines */
+  word-wrap: break-word; /* Handle long words or URLs */
+}
+
+#messageInputContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+#userInput, #messageInput {
+  margin-bottom: 10px;
+}
+
+#messageInput {
+  flex: 1;
+}
+
+#sendMessageButton {
+  align-self: flex-end; /* Aligns the button to the right */
+}
+
+#chatToggle {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 1001; /* Above chat container */
+}

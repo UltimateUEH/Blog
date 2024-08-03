@@ -1,0 +1,44 @@
+@using AppMVCWeb.Menu
+@inject AdminSidebarService AdminSidebarService
+@model IEnumerable<App.Models.Product.CategoryProduct>
+
+@{
+    ViewData["Title"] = "Danh sách các chuyên mục sản phẩm";
+    Layout = "_LayoutAdmin";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Tạo chuyên mục</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Slug)
+            </th>
+       
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+    @if (Model.Count() > 0)
+            @await Component.InvokeAsync("RowTreeCategoryProduct", new { categoryProducts = Model, level = 0 })
+    </tbody>
+</table>
+
+@{
+    AdminSidebarService.SetActive("CategoryProduct", "Index", "Product");
+}
+
+@section AdminSidebar
+{
+    @Html.Raw(AdminSidebarService.RenderHtml())
+}
+

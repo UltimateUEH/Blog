@@ -1,0 +1,29 @@
+﻿$bg-color: #2EC4B6;
+$bg-text-color: #ffffff;
+
+.photoDetails {
+    position: relative;
+
+    span {
+        display: block;
+        margin: 10px auto 10px;
+        width: 40%;
+    }
+}
+
+.display-product {
+    background: $bg-color;
+    color: $bg-text-color !important;
+    height: 2.4rem;
+    padding: 0 12px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.edit-product {
+    background: $bg-color;
+    color: $bg-text-color !important;
+}

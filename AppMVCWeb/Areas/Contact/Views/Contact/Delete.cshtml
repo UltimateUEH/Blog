@@ -1,0 +1,63 @@
+﻿@using AppMVCWeb.Menu
+@inject AdminSidebarService AdminSidebarService
+@model AppMVCWeb.Models.Contacts.Contact
+
+@{
+    ViewData["Title"] = "Xóa liên hệ";
+    Layout = "_LayoutAdmin";
+}
+
+<h1>@ViewData["Delete"]</h1>
+
+<h3>Bạn có chắc chắn muốn xóa liên hệ này?</h3>
+<div>
+    <h4>Contact</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FullName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FullName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DateSent)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DateSent)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Message)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Message)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Xóa" class="btn btn-danger" /> |
+        <a asp-action="Index">Quay lại</a>
+    </form>
+</div>
+
+@{
+    AdminSidebarService.SetActive("Contact", "Index", "Contact");
+}
+
+@section AdminSidebar
+{
+    @Html.Raw(AdminSidebarService.RenderHtml())
+}

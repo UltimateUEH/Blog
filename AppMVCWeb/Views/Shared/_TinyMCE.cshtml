@@ -1,0 +1,38 @@
+﻿@model App.Models.TinyMCE
+
+@if (Model.LoadLibrary)
+{
+    <script src="~/lib/tinymce/tinymce.min.js"></script>
+    <script src="https://cdn.tiny.cloud/1/rjwnmqj8qz09t92kongw2divxshnocsfz2m5kq7d92cw02xs/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <link rel="stylesheet" href="~/lib/jqueryui/themes/base/theme.css" />
+    <link rel="stylesheet" href="~/lib/jqueryui/themes/base/jquery-ui.css" />
+    <link rel="stylesheet" href="~/lib/elfinder/css/elfinder.full.css" />
+    <link rel="stylesheet" href="~/lib/elfinder/css/theme.min.css" />
+    <link rel="stylesheet" href="~/css/elfinder-material-theme/Material/css/theme-light.css" />
+
+    <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
+    <script src="~/lib/elfinder/js/elfinder.min.js"></script>
+
+    <script type="text/javascript" src="https://nao-pon.github.io/tinymceElfinder/tinymceElfinder.js"></script>
+}
+
+<script>
+    const mceElf = new tinymceElfinder({
+        // connector URL (Set your connector)
+        url: '/file-manager-connector', // Update this to your connector URL
+        // upload target folder hash for this tinyMCE
+        uploadTargetHash: 'l1_lw', // Hash value on elFinder of writable folder
+        // elFinder dialog node id
+        nodeId: 'elfinder' // Any ID you decide
+    });
+
+    tinymce.init({
+        selector: '@Model.IdEditor',
+        height: @Model.Height,
+        plugins: '@Html.Raw(Model.Plugins.Trim())',
+        toolbar: '@Html.Raw(Model.Toolbars.Trim())',
+        file_picker_callback: mceElf.browser,
+        images_upload_handler: mceElf.uploadHandler
+    });
+</script>

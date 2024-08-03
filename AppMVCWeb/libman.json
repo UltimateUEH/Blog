@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "multiple-select@1.2.3",
+      "destination": "wwwroot/lib/multiple-select"
+    },
+    {
+      "library": "tinymce@7.2.1",
+      "destination": "wwwroot/lib/tinymce"
+    },
+    {
+      "library": "jqueryui@1.13.3",
+      "destination": "wwwroot/lib/jqueryui"
+    },
+    {
+      "library": "elfinder@2.1.65",
+      "destination": "wwwroot/lib/elfinder"
+    },
+    {
+      "library": "jquery-easing@1.4.1",
+      "destination": "wwwroot/lib/jquery-easing"
+    },
+    {
+      "library": "font-awesome@6.6.0",
+      "destination": "wwwroot/lib/font-awesome"
+    }
+  ]
+}

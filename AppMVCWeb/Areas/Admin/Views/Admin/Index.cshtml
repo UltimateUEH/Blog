@@ -1,0 +1,55 @@
+﻿@using AppMVCWeb.Menu
+@inject AdminSidebarService AdminSidebarService
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Admin - Control panel";
+    var revenueDataJson = ViewBag.RevenueData;
+    var totalRevenue = ViewBag.TotalRevenue;
+}
+
+<div>
+    <h2>Tổng Quan về Doanh Thu</h2>
+    <canvas id="revenueChart" width="400" height="200"></canvas>
+    <p id="totalRevenue">Tổng Doanh Thu: @totalRevenue.ToString("C")</p>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Parse the serialized data
+        const revenueData = JSON.parse('@Html.Raw(revenueDataJson)');
+
+        // Prepare data for the chart
+        const labels = revenueData.map(r => r.MonthYear);
+        const data = revenueData.map(r => r.TotalRevenue);
+
+        // Render the chart
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(ctx, {
+            type: 'line', // Change to 'bar' for a bar chart
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Doanh Thu',
+                    data: data,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+}
+
+@section AdminSidebar 
+{
+    @Html.Raw(AdminSidebarService.RenderHtml())
+}

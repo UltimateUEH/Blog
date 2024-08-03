@@ -1,0 +1,215 @@
+﻿@using AppMVCWeb.Menu
+@inject AdminSidebarService AdminSidebarService
+@model AppMVCWeb.Areas.Product.Models.CreateProductModel
+
+@{
+    ViewData["Title"] = "Cập nhật sản phẩm";
+    Layout = "_LayoutAdmin";
+
+    var list = ViewData["categoryProducts"] as MultiSelectList;
+}
+
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="ProductId" />
+            <div class="form-group">
+                <label asp-for="CategoryIds" class="control-label"></label>
+                <select asp-for="CategoryIds" multiple="multiple" asp-items="list" class="w-100"></select>
+                <span asp-validation-for="CategoryIds" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <br />
+            <input class="collapse" type="file" id="selectFileUpload" onchange="AutoUploadPhoto()" />
+            <span class="btn edit-product mb-4" onclick="ClickButtonUpload()">Tải ảnh</span>
+
+            <div id="box-photoUpload" class="d-flex flex-wrap photoUpload" data-id="@Model.ProductId"></div>
+            <br />
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Slug" class="control-label"></label>
+                <input asp-for="Slug" class="form-control" />
+                <span asp-validation-for="Slug" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Content" class="control-label"></label>
+                <textarea asp-for="Content" class="form-control"></textarea>
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+            <div class="form-check">
+                <input asp-for="Published" class="form-check-input" type="checkbox" id="flexCheckChecked" checked>
+                <label class="form-check-label" for="flexCheckChecked">
+                    @Html.DisplayNameFor(model => model.Published)
+                </label>
+            </div>
+            <div class="form-group mt-2">
+                <input type="submit" value="Cập nhật sản phẩm" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Quay lại danh sách</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="~/lib/multiple-select/multiple-select.min.js"></script>
+    <link rel="stylesheet" href="~/lib/multiple-select/multiple-select.min.css" />
+
+    <style>
+        .ms-choice .placeholder {
+            min-height: 0 !important;
+            display: none !important;
+        }
+    </style>
+
+    <script>
+        $("#CategoryIds").multipleSelect({
+            selectAll: false,
+            keepOpen: false,
+            isOpen: false,
+        });
+    </script>
+
+    <script>
+        function AutoUploadPhoto() {
+            let formData = new FormData();
+
+            let photoId = $("#box-photoUpload").data("id");
+            formData.append("id", photoId);
+
+            var fileNumber = document.getElementById("selectFileUpload").files.length;
+            if (fileNumber == 0) return;
+            var fileData = document.getElementById("selectFileUpload").files[0];
+            formData.append("FileUpload", fileData);
+
+            let urlUpload = "@Url.Action("UploadPhotoApi")";
+
+            $.ajax({
+                data: formData,
+                cache: false,
+                url: urlUpload,
+                type: "POST",
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    LoadPhotos();
+                }
+            });
+        }
+
+        function ClickButtonUpload() {
+            $("#selectFileUpload").click();
+        }
+
+        function LoadPhotos() {
+            let box = $("#box-photoUpload");
+            let productId = box.data("id");
+            box.empty();
+
+            let fromData = new FormData();
+            fromData.append("id", productId);
+
+            let urlListPhoto = "@Url.Action("ListPhotos")";
+
+            $.ajax({
+                data: fromData,
+                cache: false,
+                url: urlListPhoto,
+                type: "POST",
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    data.photos.forEach(function (item) {
+                        var element = $('<div class="photoDetails w-25">' +
+                            '<img class="w-100 photoItem" src="' + item.path + '" alt="' + item.path + '" />' +
+                            '<span class="btn btn-danger" data-id="' + item.id + '">Xóa ảnh</span>' +
+                            '</div>');
+
+                        box.append(element);
+                    });
+
+                    setTimeout(SetClickDeletePhoto, 100);
+                }
+            });
+        }
+
+
+        function SetClickDeletePhoto() {
+            $('#box-photoUpload').off('click', '.photoDetails span').on('click', '.photoDetails span', function () {
+                if (!confirm("Bạn có chắc chắn muốn xóa ảnh này?")) return;
+
+                let button = $(this);
+                let photoId = button.data("id");
+
+                let formData = new FormData();
+                formData.append("id", photoId);
+
+                let urlDeletePhoto = "@Url.Action("DeletePhoto")";
+
+                $.ajax({
+                    data: formData,
+                    cache: false,
+                    url: urlDeletePhoto,
+                    type: "POST",
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        if (data.success === 1) {
+                            LoadPhotos();
+                        } else {
+                            alert(data.message);
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("Lỗi khi xóa ảnh: " + errorThrown);
+                    }
+                });
+            });
+        }
+
+
+        $(document).ready(function () {
+            LoadPhotos();
+        })
+    </script>
+
+    <partial name="_ValidationScriptsPartial" />
+}
+
+@{
+    // var tinymceDescription = new TinyMCE("#Description");
+    var tinymceContent = new TinyMCE("#Content");
+}
+
+@* <partial name="_TinyMCE" model="tinymceDescription" /> *@
+<partial name="_TinyMCE" model="tinymceContent" />
+
+@{
+    AdminSidebarService.SetActive("ProductManagement", "Edit", "Product");
+}
+
+@section AdminSidebar
+{
+    @Html.Raw(AdminSidebarService.RenderHtml())
+}

@@ -1,0 +1,26 @@
+{
+  "name": "appmvcweb",
+  "version": "1.0.0",
+  "description": "AppMVCWeb",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ultimate",
+  "license": "ISC",
+  "dependencies": {
+    "elfinder-material-theme": "^3.0.0",
+    "gulp": "^5.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-cssmin": "^0.2.0",
+    "gulp-less": "^5.0.0",
+    "gulp-postcss": "^10.0.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^5.1.0",
+    "gulp-uglify": "^3.0.2",
+    "node-sass": "^9.0.0",
+    "postcss": "^8.4.39",
+    "rimraf": "^5.0.9",
+    "sass": "^1.77.8"
+  }
+}

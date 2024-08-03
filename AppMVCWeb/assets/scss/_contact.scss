@@ -1,0 +1,22 @@
+﻿$bg-contact: #2EC4B6;
+$bg-text-contact: #ffffff;
+
+.contact-firstcol {
+    background: $bg-contact;
+    color: $bg-text-contact;
+    text-align: center;
+    border-radius: 10px;
+
+    img {
+        max-width: 100px;
+    }
+}
+
+.control-label{
+    font-weight: 600;
+}
+
+.btn-custom {
+    background: $bg-contact;
+    color: $bg-text-contact;
+}

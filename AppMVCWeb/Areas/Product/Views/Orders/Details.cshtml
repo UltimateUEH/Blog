@@ -1,0 +1,58 @@
+﻿@using AppMVCWeb.Menu
+@inject AdminSidebarService AdminSidebarService
+@model AppMVCWeb.Areas.Product.Models.Order
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Chi tiết đơn hàng";
+}
+
+<h2>Chi tiết đơn hàng</h2>
+
+<div>
+    <h4>Mã hóa đơn: @Model.OrderId</h4>
+    <p>Tên khách hàng: @Model.CustomerName</p>
+    <p>Số điện thoại khách hàng: @Model.CustomerPhone</p>
+    <p>Địa chỉ khách hàng: @Model.CustomerAddress</p>
+    <p>Ngày tạo hóa đơn: @Model.OrderDate.ToString("dd/MM/yyyy")</p>
+    <p>Tổng cộng: @Model.TotalAmount.ToString("n0")</p>
+    <p>Trạng thái: @Model.OrderStatus</p>
+    <p>Phương thức thanh toán: @Model.PaymentMethod</p>
+</div>
+
+<h3>Order Items</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Sản phẩm</th>
+            <th>Số lượng</th>
+            <th>Giá</th>
+            <th>Tổng cộng</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.OrderItems)
+        {
+            <tr>
+                <td>@item.Product.Title</td>
+                <td>@item.Quantity</td>
+                <td>@item.Price.ToString("n0")</td>
+                <td>@((item.Quantity * item.Price).ToString("n0"))</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a href="@Url.Action("Index", "Orders")" class="btn btn-secondary">Quay lại danh sách đơn hàng</a>
+</div>
+
+@{
+    AdminSidebarService.SetActive("Orders", "Details", "Product");
+}
+
+@section AdminSidebar
+{
+    @Html.Raw(AdminSidebarService.RenderHtml())
+}

@@ -1,0 +1,13 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Sản phẩm";
+}
+
+<div class="row">
+    <div class="col-md-3">
+        @RenderSection("Sidebar", required: false)
+    </div>
+    <div class="col-md-9">
+        @RenderBody()
+    </div>    
+</div>

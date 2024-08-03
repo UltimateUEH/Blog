@@ -1,0 +1,15 @@
+﻿@using AppMVCWeb.Areas.Product.Services
+@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+
+@inject CartService cartService;
+
+
+@{
+    var cartItem = cartService.GetCartItems(); 
+
+    if (cartItem.Count > 0)
+    {
+        <div class="nav-item"><a asp-route="cart" class="cart-navbar"><i class="fa-solid fa-cart-shopping"></i>(@cartItem.Count)</a></div>
+    }
+}

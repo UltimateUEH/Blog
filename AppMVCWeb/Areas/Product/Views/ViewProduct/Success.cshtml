@@ -1,0 +1,12 @@
+﻿@model AppMVCWeb.Areas.Product.Models.Order
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Đặt hàng thành công";
+}
+<h2>Đặt hàng thành công</h2>
+<p>Cảm ơn bạn đã đặt hàng!</p>
+<p>Mã đơn hàng: @Model.OrderId</p>
+<p>Ngày đặt hàng: @Model.OrderDate</p>
+<p>Tổng tiền: @Model.TotalAmount.ToString("n0")</p>
+
+<a asp-controller="ViewProduct" asp-action="Cart" class="btn edit-product">Quay lại giỏ hàng</a>

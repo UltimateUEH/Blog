@@ -1,0 +1,140 @@
+﻿@using AppMVCWeb.Menu
+@inject AdminSidebarService AdminSidebarService
+@using static AppMVCWeb.Areas.Product.Controllers.ProductManagementController
+@model UploadOneFile
+
+@{
+    ProductModel product = ViewData["Product"] as ProductModel;
+    Layout = "_LayoutAdmin";
+}
+
+<h1>Upload photo: @product.Title</h1>
+
+<form method="post" enctype="multipart/form-data">
+    <label asp-for="@Model.FileUpload"></label>
+    <input asp-for="@Model.FileUpload" type="file" />
+    <span asp-validation-for="@Model.FileUpload"></span>
+
+    <button class="btn btn-secondary mb-2" asp-action="UploadPhoto" asp-route-id="@product.ProductId">Upload file</button>
+</form>
+
+<hr />
+<input class="collapse" type="file" id="selectFileUpload" onchange="AutoUploadPhoto()"/>
+<span class="btn btn-primary" onclick="ClickButtonUpload()">Uploads</span>
+
+<div id="box-photoUpload" class="d-flex flex-wrap photoUpload" data-id="@product.ProductId"></div>
+
+@section Scripts {
+    <script>
+        function AutoUploadPhoto() {
+            let formData = new FormData();
+
+            let photoId = $("#box-photoUpload").data("id");
+            formData.append("id", photoId);
+
+            var fileNumber = document.getElementById("selectFileUpload").files.length;
+            if (fileNumber == 0) return;
+            var fileData = document.getElementById("selectFileUpload").files[0];
+            formData.append("FileUpload", fileData);
+
+            let urlUpload = "@Url.Action("UploadPhotoApi")";
+
+            $.ajax({
+                data: formData,
+                cache: false,
+                url: urlUpload,
+                type: "POST",
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    LoadPhotos();
+                }
+            });
+        }
+
+        function ClickButtonUpload() 
+        {
+            $("#selectFileUpload").click();
+        }
+
+        function LoadPhotos() {
+            let box = $("#box-photoUpload");
+            let productId = box.data("id");
+            box.empty();
+
+            let fromData = new FormData();
+            fromData.append("id", productId);
+
+            let urlListPhoto = "@Url.Action("ListPhotos")";
+
+            $.ajax({
+                data: fromData,
+                cache: false,
+                url: urlListPhoto,
+                type: "POST",
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    data.photos.forEach(function (item) {
+                        var element = $('<div class="photoDetails w-25">' +
+                            '<img class="w-100" src="' + item.path + '" alt="' + item.path + '" />' +
+                            '<span class="btn btn-danger" data-id="' + item.id + '">Xóa ảnh</span>' +
+                            '</div>');
+
+                        box.append(element);
+                    });
+
+                    setTimeout(SetClickDeletePhoto, 100);
+                }
+            });
+        }
+
+
+        function SetClickDeletePhoto() {
+            $('#box-photoUpload').off('click', '.photoDetails span').on('click', '.photoDetails span', function () {
+                if (!confirm("Bạn có chắc chắn muốn xóa ảnh này?")) return;
+
+                let button = $(this);
+                let photoId = button.data("id");
+
+                let formData = new FormData();
+                formData.append("id", photoId);
+
+                let urlDeletePhoto = "@Url.Action("DeletePhoto")";
+
+                $.ajax({
+                    data: formData,
+                    cache: false,
+                    url: urlDeletePhoto,
+                    type: "POST",
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        if (data.success === 1) {
+                            LoadPhotos();
+                        } else {
+                            alert(data.message);
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("Lỗi khi xóa ảnh: " + errorThrown);
+                    }
+                });
+            });
+        }
+
+
+        $(document).ready(function() {
+            LoadPhotos();
+        })
+    </script>
+}
+
+@{
+    AdminSidebarService.SetActive("ProductManagement", "UploadPhoto", "Product");
+}
+
+@section AdminSidebar
+{
+    @Html.Raw(AdminSidebarService.RenderHtml())
+}

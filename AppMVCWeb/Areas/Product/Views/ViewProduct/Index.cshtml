@@ -1,0 +1,81 @@
+﻿@using App.Models.Product
+@using static AppMVCWeb.Views.Shared.Components.CategoryProductSidebar.CategoryProductSidebar
+
+@{
+    List<CategoryProduct> categoryProducts = ViewBag.categoryProducts as List<CategoryProduct>;
+    CategoryProduct categoryProduct = ViewBag.categoryProduct as CategoryProduct;
+    ViewData["Title"] = (categoryProduct == null) ? "Toàn bộ sản phẩm" : categoryProduct.Title;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="~/">Trang chủ</a></li>
+        @if (categoryProduct != null)
+        {
+            var list = categoryProduct.ListParents();
+
+            foreach (var item in list)
+            {
+                <li class="breadcrumb-item">
+                    <a asp-area="Product" asp-action="Index" asp-route-categorySlug="@item.Slug">@item.Title</a>
+                </li>
+            }
+        }
+    </ol>
+</nav>
+
+<h1>@ViewData["Title"]</h1>
+@if (categoryProduct != null)
+{
+    <p>@categoryProduct.Description</p>
+}
+else
+{
+    <p>Danh sách tất cả sản phẩm trong các danh mục</p>
+}
+<hr />
+
+<div class="d-flex flex-wrap justify-content-between">
+    @foreach (var product in Model)
+    {
+        var sourceImage = "/contents/no-photo.jpg";
+        if (product.Photos.Count > 0)
+        {
+            sourceImage = $"/contents/Products/{product.Photos[0].FileName}";
+        }
+
+        <div class="card mb-4" style="width: 18rem;">
+            <img src="@sourceImage" class="card-img-top" alt="@product.Title">
+            <div class="card-body">
+                <h5 class="card-title">@product.Title</h5>
+                <p class="card-text">@product.Description</p>
+                <span class="text-blog">
+                    @if (product.ProductCategoryProducts != null && product.ProductCategoryProducts.Count > 0)
+                    {
+                        @product.ProductCategoryProducts[0].Category.Title
+                    }
+                </span>
+                <p class="mt-2">Giá: <strong>@product.Price</strong></p>
+            </div>
+            <div class="card-body d-flex justify-content-between">
+                <a asp-area="Product" asp-controller="ViewProduct" asp-action="Details" asp-route-productSlug="@product.Slug"
+                   class="card-link">Xem chi tiết</a>
+                <a asp-area="Product" asp-action="AddToCart" asp-route-productid="@product.ProductId" class="btn display-product">Đặt hàng</a>
+            </div>
+        </div>
+    }
+</div>
+
+@section Sidebar
+{
+    @await Component.InvokeAsync("CategoryProductSidebar",
+        new CategoryProductSidebarData()
+        {
+            CategoryProducts = categoryProducts,
+            Level = 0,
+            CategorySlug = ViewBag.categorySlug
+        }
+    )
+}
+
+<partial name="_PagingXTL" model="@ViewBag.pagingModel" />

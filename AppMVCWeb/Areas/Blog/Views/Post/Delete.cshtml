@@ -1,0 +1,28 @@
+﻿@using AppMVCWeb.Menu
+@inject AdminSidebarService AdminSidebarService
+@model AppMVCWeb.Models.Blog.Post
+
+@{
+    ViewData["Title"] = "Xóa bài viết";
+    Layout = "_LayoutAdmin";
+}
+
+<h5>Bạn có chắc chắn muốn xóa bài viết này?</h5>
+<h3>@Model.Title</h3>
+<hr />
+<div>    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="PostId" />
+        <input type="submit" value="Xóa" class="btn btn-danger" /> |
+        <a asp-action="Index">Quay lại danh sách</a>
+    </form>
+</div>
+
+@{
+    AdminSidebarService.SetActive("Post", "Delete", "Blog");
+}
+
+@section AdminSidebar
+{
+    @Html.Raw(AdminSidebarService.RenderHtml())
+}

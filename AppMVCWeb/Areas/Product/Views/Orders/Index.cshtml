@@ -1,0 +1,72 @@
+﻿@using AppMVCWeb.Menu
+@inject AdminSidebarService AdminSidebarService
+@model IEnumerable<AppMVCWeb.Areas.Product.Models.Order>
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Danh sách đơn hàng";
+}
+
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mã hóa đơn</th>
+                <th>Tên khách hàng</th>
+                <th>Ngày tạo</th>
+                <th>Tổng cộng</th>
+                <th>Trạng thái</th>
+                <th>Phương thức thanh toán</th> <!-- New column for payment method -->
+                <th>Các hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>@order.OrderId</td>
+                    <td>@order.CustomerName</td>
+                    <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+                    <td>@order.TotalAmount.ToString("n0")</td>
+                    <td>@order.OrderStatus</td>
+                    <td>@order.PaymentMethod</td>
+                    <td>
+                        <a href="@Url.Action("Details", new { id = order.OrderId })" class="btn btn-primary">Chi tiết</a>
+                        @if (order.OrderStatus != "Hoàn thành")
+                        {
+                            <a href="@Url.Action("MarkAsCompleted", new { id = order.OrderId })" class="btn btn-success">Hoàn thành</a>
+                        }
+                        <form asp-action="Delete" asp-route-id="@order.OrderId" method="post" style="display:inline;" onsubmit="return confirmDelete();">
+                            <button type="submit" class="btn btn-danger">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <partial name="_PagingXTL" model="@ViewBag.pagingModel" />
+}
+else
+{
+    <p class="alert alert-info">Không có đơn hàng nào.</p>
+}
+
+@{
+    AdminSidebarService.SetActive("Orders", "Index", "Product");
+}
+
+@section AdminSidebar
+{
+    @Html.Raw(AdminSidebarService.RenderHtml())
+}
+
+@section Scripts
+{
+    <script>
+        function confirmDelete() {
+            return confirm("Bạn có chắc chắn muốn xóa không?");
+        }
+    </script>
+}

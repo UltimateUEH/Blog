@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - AppMVCWeb</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" asp-append-version="true" />
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <link rel="stylesheet" href="~/AppMVCWeb.styles.css" asp-append-version="true" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-bottom box-shadow mb-3 appmvc-navbar">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AppMVCWeb</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-navbar" asp-area="Blog" asp-controller="ViewPost" asp-action="Index">Bài viết</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-navbar" asp-area="Product" asp-controller="ViewProduct" asp-action="Index">Sản phẩm</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-navbar" asp-area="Contact" asp-controller="Contact" asp-action="SendContact">Liên hệ</a>
+                        </li>
+                    </ul>
+
+                    @await Html.PartialAsync("_CartPartial")
+                    <partial name="_LoginPartial" />
+                    <div class="me-4"></div>
+                    <partial name="_ManageMenuPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted appmvc-footer">
+        <div class="container">
+            &copy; 2024 - AppMVCWeb - <a asp-area="" asp-controller="Home" asp-action="Privacy" class="privacy">Chính sách</a>
+        </div>
+    </footer>
+
+    <div id="chatContainer">
+        <ul id="messagesList"></ul>
+        <div id="messageInputContainer">
+            <input type="text" id="messageInput" class="form-control" placeholder="Message">
+            <button id="sendMessageButton" class="btn btn-primary">Send</button>
+        </div>
+    </div>
+    <button id="chatToggle">&#x1F4AC;</button> <!-- Chat icon -->
+
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chathub")
+            .build();
+
+        connection.on("ReceiveMessage", (role, formattedMessage) => {
+            const li = document.createElement("li");
+            li.innerHTML = formattedMessage; // Use innerHTML to render HTML content
+            document.getElementById("messagesList").appendChild(li);
+        });
+
+        document.getElementById("sendMessageButton").addEventListener("click", async () => {
+            const message = document.getElementById("messageInput").value;
+            await connection.invoke("SendMessage", message);
+            document.getElementById("messageInput").value = ''; // Clear input after sending
+        });
+
+        document.getElementById("chatToggle").addEventListener("click", () => {
+            const chatContainer = document.getElementById("chatContainer");
+            const chatToggle = document.getElementById("chatToggle");
+
+            // Toggle chat container expansion
+            if (chatContainer.classList.contains("expanded")) {
+                chatContainer.classList.remove("expanded");
+                chatToggle.style.display = 'flex'; // Show the chat icon
+            } else {
+                chatContainer.classList.add("expanded");
+                chatToggle.style.display = 'none'; // Hide the chat icon
+            }
+        });
+
+        // Hide chat container when clicking outside of it
+        document.addEventListener("click", (event) => {
+            const chatContainer = document.getElementById("chatContainer");
+            const chatToggle = document.getElementById("chatToggle");
+
+            // Check if the click is outside the chat container and icon
+            if (!chatContainer.contains(event.target) && !chatToggle.contains(event.target)) {
+                if (chatContainer.classList.contains("expanded")) {
+                    chatContainer.classList.remove("expanded");
+                    chatToggle.style.display = 'flex'; // Show the chat icon
+                }
+            }
+        });
+
+        connection.start().catch(err => console.error(err));
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

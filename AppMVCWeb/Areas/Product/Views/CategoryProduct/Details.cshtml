@@ -1,0 +1,41 @@
+﻿@using AppMVCWeb.Menu
+@inject AdminSidebarService AdminSidebarService
+@model App.Models.Product.CategoryProduct
+@{
+    ViewData["Title"] = Model.Title;
+    Layout = "_LayoutAdmin";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <h4>Category product</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Nội dung
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.Raw(@Model.Description)
+        </dd>
+        <dt class = "col-sm-2">
+            Url
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Slug)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Chỉnh sửa</a> |
+    <a asp-action="Index">Quay lại danh sách</a>
+</div>
+
+@{
+    AdminSidebarService.SetActive("CategoryProduct", "Details", "Product");
+}
+
+@section AdminSidebar
+{
+    @Html.Raw(AdminSidebarService.RenderHtml())
+}

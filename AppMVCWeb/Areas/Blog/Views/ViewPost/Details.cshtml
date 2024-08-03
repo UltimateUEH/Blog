@@ -1,0 +1,69 @@
+﻿@using App.Models.Blog
+@using AppMVCWeb.Models.Blog
+@using static AppMVCWeb.Views.Shared.Components.CategorySidebar.CategorySidebar
+@{
+    List<Category> categories = ViewBag.categories as List<Category>;
+    Category category = ViewBag.category as Category;;
+
+    IQueryable<Post> otherPosts = ViewBag.otherPosts as IQueryable<Post>;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="~/">Trang chủ</a></li>
+        @if (category != null)
+        {
+            var list = category.ListParents();
+
+            foreach (var item in list)
+            {
+                <li class="breadcrumb-item">
+                    <a asp-action="Index" asp-route-categorySlug="@item.Slug">@item.Title</a>
+                </li>
+            }
+            <li class="breadcrumb-item">
+                <a asp-action="Index" asp-route-categorySlug="@category.Slug">@category.Title</a>
+            </li>
+        }
+    </ol>
+</nav>
+
+<div class="detail-post">
+    <h2 class="text-post-title">@Model.Title</h2>
+    <p class="text-post-description">@Model.Description</p>
+    <div>
+        <span>
+            <i>Cập nhật: @Model.DateUpdated</i>  | Tác giả: <strong>@Model.Author.UserName</strong>
+        </span>
+    </div>
+    <hr />
+    <div class="content">
+        @Html.Raw(Model.Content)
+    </div>
+</div>
+
+
+@section Sidebar
+{
+    @await Component.InvokeAsync("CategorySidebar",
+                new CategorySidebarData()
+        {
+            Categories = categories,
+            Level = 0,
+            CategorySlug = category.Slug
+        }
+    )
+
+    <div class="other-posts mt-4">
+        <h5 class="mb-3">Các bài viết khác</h5>
+        <div class="list-group">
+            @foreach (var post in otherPosts)
+            {
+                <a href="@Url.Action("Details", "ViewPost", new { postSlug = post.Slug })" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    @post.Title
+                    <small class="text-muted">@post.DateUpdated.ToString("dd/MM/yyyy")</small>
+                </a>
+            }
+        </div>
+    </div>
+}

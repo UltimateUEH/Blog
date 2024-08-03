@@ -1,0 +1,78 @@
+﻿@using App.Models.Blog
+@using static AppMVCWeb.Views.Shared.Components.CategorySidebar.CategorySidebar
+@{
+    List<Category> categories = ViewBag.Categories as List<Category>;
+    Category category = ViewBag.Category as Category;
+    ViewData["Title"] = (category == null) ? "Bài viết trong tất cả danh mục" : category.Title;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="~/">Trang chủ</a></li>
+        @if (category != null)
+        {
+            var list = category.ListParents();
+
+            foreach (var item in list)
+            {
+                <li class="breadcrumb-item">
+                    <a asp-action="Index" asp-route-categorySlug="@item.Slug">@item.Title</a>
+                </li>
+            }
+        }
+    </ol>
+</nav>
+
+<h1>@ViewData["Title"]</h1>
+@if (category != null)
+{
+    <p>@category.Description</p>
+}
+else
+{
+    <p>Danh sách bài viết trong tất cả danh mục</p>
+}
+<hr />
+
+@foreach (var post in Model)
+{
+    <div class="d-flex border-bottom mb-3 pb-3">
+        <div class="flex-shrink-0">
+            <img src="/contents/no-photo.jpg" class="me-3" alt="No photo">
+        </div>
+        <div class="flex-grow-1 ms-3">
+            <a asp-controller="ViewPost" asp-action="Details" asp-route-postSlug="@post.Slug">
+                @post.Title
+            </a>
+            <p>@post.Description</p>
+            <div>
+                <span>
+                    Chuyên mục:
+                    <span class="text-blog">
+                        @if (post.PostCategories != null && post.PostCategories.Count > 0)
+                        {
+                            @post.PostCategories[0].Category.Title
+                        }
+                    </span>
+                </span>
+            </div>
+            <div class="author-row">
+                <span class="author">Tác giả: <strong>@post.Author</strong></span> (Cập nhật: <i>@post.DateUpdated.ToString("dd/MM/yyyy")</i>)
+            </div>
+        </div>
+    </div>
+}
+
+@section Sidebar
+{
+    @await Component.InvokeAsync("CategorySidebar", 
+        new CategorySidebarData()
+        {
+            Categories = categories,
+            Level = 0,
+            CategorySlug = ViewBag.categorySlug
+        }
+    )
+}
+
+<partial name="_PagingXTL" model="@ViewBag.pagingModel" />

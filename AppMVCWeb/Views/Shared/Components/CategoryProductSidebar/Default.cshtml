@@ -1,0 +1,45 @@
+﻿@using static AppMVCWeb.Views.Shared.Components.CategoryProductSidebar.CategoryProductSidebar
+@model AppMVCWeb.Views.Shared.Components.CategoryProductSidebar.CategoryProductSidebar.CategoryProductSidebarData
+
+@if (Model.CategoryProducts.Count > 0)
+{
+    @if (Model.Level == 0)
+    {
+        @Html.Raw("<div class=\"category-sidebar\">")
+        <div class="fs-4 fw-bolder line">
+            <a asp-controller="ViewProduct" asp-action="Index" asp-route-categorySlug="" class="text-dark category-sidebar-custom">
+                Tất cả chuyên mục
+            </a>
+        </div>
+    }
+
+    <ul>
+        @foreach (var categoryProduct in Model.CategoryProducts)
+        {
+            var cssActive = (categoryProduct.Slug == Model.CategorySlug) ? "active" : null;
+
+            <li>
+                <a class="@cssActive text-dark" asp-controller="ViewProduct" asp-action="Index" asp-route-categorySlug="@categoryProduct.Slug">
+                    @categoryProduct.Title
+                </a>
+
+                @if (categoryProduct.CategoryChildren?.Count > 0)
+                {
+                    @await Component.InvokeAsync("CategoryProductSidebar", 
+                        new CategoryProductSidebarData()
+                        {
+                            CategoryProducts = categoryProduct.CategoryChildren.ToList(),
+                            Level = Model.Level + 1,
+                            CategorySlug = Model.CategorySlug
+                        }
+                    )
+                }
+            </li>
+        }
+    </ul>
+
+    @if (Model.Level == 0)
+    {
+        @Html.Raw("</div>")
+    }
+}

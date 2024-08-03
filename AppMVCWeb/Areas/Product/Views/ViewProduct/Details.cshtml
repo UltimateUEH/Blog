@@ -1,0 +1,84 @@
+﻿@using App.Models.Product
+@using AppMVCWeb.Models.Product
+@using static AppMVCWeb.Views.Shared.Components.CategoryProductSidebar.CategoryProductSidebar
+@{
+    List<CategoryProduct> categoryProducts = ViewBag.categoryProducts as List<CategoryProduct>;
+    CategoryProduct categoryProduct = ViewBag.categoryProduct as CategoryProduct;
+
+    IQueryable<ProductModel> otherProducts = ViewBag.otherProducts as IQueryable<ProductModel>;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="~/">Trang chủ</a></li>
+        @if (categoryProduct != null)
+        {
+            var list = categoryProduct.ListParents();
+
+            foreach (var item in list)
+            {
+                <li class="breadcrumb-item">
+                    <a asp-action="Index" asp-route-categorySlug="@item.Slug">@item.Title</a>
+                </li>
+            }
+            <li class="breadcrumb-item">
+                <a asp-action="Index" asp-route-categorySlug="@categoryProduct.Slug">@categoryProduct.Title</a>
+            </li>
+        }
+    </ol>
+</nav>
+
+<div class="detail-post">
+    <h2 class="text-post-title">@Model.Title</h2>
+    <p class="text-post-description">@Model.Description</p>
+    <div>
+        <p>Giá: <strong>@Model.Price</strong></p>
+        <a asp-action="AddToCart" asp-route-productid="@Model.ProductId" class="btn edit-product">Đặt hàng</a>
+    </div>
+    <div>
+        <span>
+            <i>Cập nhật: @Model.DateUpdated</i>  | Tác giả: <strong>@Model.Author.UserName</strong>
+        </span>
+    </div>
+    <hr />
+
+    @if (Model.Photos != null)
+    {
+        <div class="d-flex flex-wrap">
+            @foreach (var photo in Model.Photos)
+            {
+                <img src="/contents/Products/@photo.FileName" class="img-fluid mr-2 mb-2" alt="@Model.Title" />
+            }
+        </div>
+    }
+
+    <div class="content">
+        @Html.Raw(Model.Content)
+    </div>
+</div>
+
+
+@section Sidebar
+{
+    @await Component.InvokeAsync("CategoryProductSidebar",
+                new CategoryProductSidebarData()
+        {
+            CategoryProducts = categoryProducts,
+            Level = 0,
+            CategorySlug = categoryProduct.Slug
+        }
+    )
+
+    <div class="other-posts mt-4">
+        <h5 class="mb-3">Các sản phẩm khác</h5>
+        <div class="list-group">
+            @foreach (var product in otherProducts)
+            {
+                <a href="@Url.Action("Details", "ViewProduct", new { productSlug = product.Slug })" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    @product.Title
+                    <small class="text-muted">@product.DateUpdated.ToString("dd/MM/yyyy")</small>
+                </a>
+            }
+        </div>
+    </div>
+}

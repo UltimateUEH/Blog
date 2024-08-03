@@ -1,0 +1,75 @@
+﻿@using AppMVCWeb.Models.Blog
+@using AppMVCWeb.Models.Product
+@{
+    ViewData["Title"] = "Trang chủ";
+
+    var products = ViewBag.Products as IQueryable<ProductModel>;
+    var posts = ViewBag.Posts as IQueryable<Post>;
+}
+
+<partial name="_AlertMessage" />
+
+<div class="container mt-5">
+    <h2>Các sản phẩm hot</h2>
+    <div class="row d-flex flex-wrap justify-content-between">
+        @foreach (var product in products)
+        {
+            var sourceImage = "/contents/no-photo.jpg";
+            if (product.Photos.Count > 0)
+            {
+                sourceImage = $"/contents/Products/{product.Photos[0].FileName}";
+            }
+
+            <div class="card mb-4" style="width: 16rem;">
+                <img src="@sourceImage" class="card-img-top" alt="@product.Title">
+                <div class="card-body">
+                    <h5 class="card-title">@product.Title</h5>
+                    <p class="card-text">@product.Description</p>
+                    <span class="text-blog">
+                        @if (product.ProductCategoryProducts != null && product.ProductCategoryProducts.Count > 0)
+                        {
+                            @product.ProductCategoryProducts[0].Category.Title
+                        }
+                    </span>
+                    <p class="mt-2">Giá: <strong>@product.Price</strong></p>
+                </div>
+                <div class="card-body d-flex justify-content-between">
+                    <a asp-area="Product" asp-controller="ViewProduct" asp-action="Details" asp-route-productSlug="@product.Slug" class="card-link">Xem chi tiết</a>
+                    <a asp-area="Product" asp-controller="ViewProduct" asp-action="AddToCart" asp-route-productid="@product.ProductId" class="btn display-product">Đặt hàng</a>
+                </div>
+            </div>
+        }
+    </div>
+
+    <h2 class="mt-5">Các bài viết mới nhất</h2>
+    <div class="row">
+        @foreach (var post in posts)
+        {
+            <div class="d-flex border-bottom mb-3 pb-3">
+                <div class="flex-shrink-0">
+                    <img src="/contents/no-photo.jpg" class="me-3" alt="No photo" style="width: 4rem">
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <a asp-area="Blog" asp-controller="ViewPost" asp-action="Details" asp-route-postSlug="@post.Slug">
+                        @post.Title
+                    </a>
+                    <p>@post.Description</p>
+                    <div>
+                        <span>
+                            Chuyên mục:
+                            <span class="text-blog">
+                                @if (post.PostCategories != null && post.PostCategories.Count > 0)
+                                {
+                                    @post.PostCategories[0].Category.Title
+                                }
+                            </span>
+                        </span>
+                    </div>
+                    <div class="author-row">
+                        <span class="author">Tác giả: <strong>@post.Author</strong></span> (Cập nhật: <i>@post.DateUpdated.ToString("dd/MM/yyyy")</i>)
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

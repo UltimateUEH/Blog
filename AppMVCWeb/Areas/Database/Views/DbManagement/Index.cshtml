@@ -1,0 +1,79 @@
+﻿@using App.Models
+@using AppMVCWeb.Menu
+@using Microsoft.EntityFrameworkCore
+@using System.Data
+@inject AppDbContext dbContext
+@inject AdminSidebarService AdminSidebarService
+
+@{
+    ViewData["Title"] = "Thông tin database";
+    Layout = "_LayoutAdmin";
+
+    var connection = dbContext.Database.GetDbConnection();
+    var dbName = connection.Database;
+    var can_connect = dbContext.Database.CanConnect();
+
+    dbContext.Database.GetAppliedMigrations();
+}
+
+<div class="container">
+    <partial name="_AlertMessage" />
+
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Thông tin kết nối</h3>
+            <p>Database: @dbName</p>
+            <p>Connection string: @connection.ConnectionString</p>
+            <p>Trạng thái kết nối: @can_connect</p>
+        </div>
+        <div class="col-md-6">
+            <h3>Thông tin migration</h3>
+            <p>Migration đã áp dụng: </p>
+            <ul>
+                @foreach (var migration in dbContext.Database.GetAppliedMigrations())
+                {
+                    <li>@migration</li>
+                }
+                @foreach (var migration in dbContext.Database.GetPendingMigrations())
+                {
+                    <li>@migration (pending)</li>
+                }             
+            </ul>
+
+            @if (!can_connect)
+            {
+                <p class="alert alert-danger">Không tạo được kết nối tới database</p>
+            }
+            @if (dbContext.Database.GetPendingMigrations().Any())
+            {
+                <form method="post">
+                    <button class="btn btn-primary" asp-action="MigrateDb">Tạo database (cập nhật migration)</button>
+                </form>
+            }
+            @if (can_connect)
+            {
+                <h2>Các bảng</h2>
+                await dbContext.Database.OpenConnectionAsync();
+                var table = dbContext.Database.GetDbConnection().GetSchema("Tables");
+                <ul>
+                    @foreach (DataRow row in table.Rows)
+                    {
+                        <li>@row["TABLE_NAME"]</li>
+                    }
+                </ul>
+
+                <a class="btn btn-danger" asp-action="DeleteDb">Xóa database: @dbName</a>
+                <a class="btn btn-warning" asp-action="SeedData">Seed data</a>
+            }
+        </div>
+    </div>
+</div>
+
+@{
+    AdminSidebarService.SetActive("DbManagement", "Index", "Database");
+}
+
+@section AdminSidebar
+{
+    @Html.Raw(AdminSidebarService.RenderHtml())
+}

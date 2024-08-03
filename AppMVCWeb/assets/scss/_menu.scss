@@ -1,0 +1,64 @@
+﻿$bg-menu-color: #2EC4B6;
+$bg-cart-color: #023047;
+$bg-menu-text-color: #FFFFFF;
+$bg-menu-hover-color: #FF9F1C;
+$bg-cart-hover-color: #FFFFFF;
+$bg-menu-active-color: #2EC4B6;
+
+.appmvc-navbar {
+    background-color: $bg-menu-color;
+
+    .text-navbar, .navbar-brand {
+        color: $bg-menu-text-color !important;
+        &:hover {
+            color: $bg-menu-hover-color !important;
+        }
+    }
+
+    .dropdown-toggle-custom {
+        border-color: transparent !important;
+        color: $bg-menu-text-color;
+        &:hover {
+            color: $bg-menu-hover-color;
+        }
+    }
+}
+
+.category-sidebar {
+    .line {
+        border-bottom: 1px solid #000000;
+        margin-bottom: 10px;
+    }
+
+    a {
+        &:hover {
+            color: $bg-menu-hover-color !important;
+        }
+
+        &.active {
+            color: $bg-menu-active-color !important;
+        }
+    }
+
+    ul, li {
+        list-style: none;
+    }
+
+    >ul>li>a {
+        font-weight: bold;
+    }
+
+    .category-sidebar-custom {
+        text-transform: uppercase;
+        padding-bottom: 2px;
+    }
+}
+
+.cart-navbar {
+    color: $bg-cart-color;
+    font-weight: 400;
+
+    &:hover {
+        color: $bg-cart-hover-color;
+    }
+}
